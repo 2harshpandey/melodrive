@@ -57,7 +57,7 @@ const Player: React.FC = () => {
     handleProgress,
     handleDuration,
   } = usePlayer();
-  const playerRef = useRef<ReactPlayer>(null);
+  const playerRef = useRef<any>(null);
 
   const handleSeekChange = (event: Event, newValue: number | number[]) => {
     if (playerRef.current) {

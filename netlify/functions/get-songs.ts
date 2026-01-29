@@ -32,7 +32,7 @@ const handler: Handler = async (event, context) => {
     console.log(`Found ${resources.length} resources.`);
     const songs = resources.map((file: any) => ({
       url: file.secure_url,
-      title: file.filename,
+      title: file.original_filename || file.filename,
       artist: file.context?.custom?.artist || 'Unknown Artist',
       albumArt: file.context?.custom?.albumArt,
     }));
