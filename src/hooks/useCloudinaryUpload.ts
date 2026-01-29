@@ -10,6 +10,7 @@ declare global {
 interface CloudinaryUploadWidgetOptions {
   cloudName: string;
   uploadPreset: string;
+  apiKey: string;
   tags: string[];
   cropping: boolean;
   onSuccess: (result: any) => void;
@@ -24,6 +25,7 @@ const useCloudinaryUpload = (options: CloudinaryUploadWidgetOptions) => {
         {
           cloudName: options.cloudName,
           uploadPreset: options.uploadPreset,
+          apiKey: options.apiKey,
           tags: options.tags,
           cropping: options.cropping,
           resource_type: 'video',
