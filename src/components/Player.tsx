@@ -7,7 +7,6 @@ import {
   IconButton,
   Slider,
   styled,
-  Grid,
 } from '@mui/material';
 import {
   PlayArrow,
@@ -51,11 +50,13 @@ const Player: React.FC = () => {
     loop,
     progress,
     duration,
+    playedSeconds,
     togglePlay,
     setVolume,
     toggleLoop,
     handleProgress,
     handleDuration,
+    handleEnded,
   } = usePlayer();
   const playerRef = useRef<any>(null);
 
@@ -88,18 +89,17 @@ const Player: React.FC = () => {
         onProgress={handleProgress}
         // @ts-ignore
         onDuration={handleDuration}
-        onPlay={!isPlaying ? togglePlay : undefined}
-        onPause={isPlaying ? togglePlay : undefined}
+        onEnded={handleEnded}
         style={{ display: 'none' }}
       />
-      <Grid container alignItems="center" spacing={2}>
-        <Box component={Grid} item xs={3}>
+      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Box sx={{ width: '25%', pr: 2 }}>
           <Typography variant="subtitle1" noWrap>{currentSong.title}</Typography>
           <Typography variant="caption" color="text.secondary" noWrap>
             {currentSong.artist}
           </Typography>
         </Box>
-        <Box component={Grid} item xs={6}>
+        <Box sx={{ width: '50%' }}>
           <Box display="flex" alignItems="center" justifyContent="center">
             <IconButton size="small" onClick={() => handleSeek(-10)}>
               <FastRewind />
@@ -115,7 +115,7 @@ const Player: React.FC = () => {
             </IconButton>
           </Box>
           <Box display="flex" alignItems="center">
-            <Typography variant="caption" sx={{ mr: 1 }}>{formatTime(progress * duration)}</Typography>
+            <Typography variant="caption" sx={{ mr: 1 }}>{formatTime(playedSeconds)}</Typography>
             <Slider
               aria-label="time-indicator"
               size="small"
@@ -128,23 +128,21 @@ const Player: React.FC = () => {
             <Typography variant="caption" sx={{ ml: 1 }}>{formatTime(duration)}</Typography>
           </Box>
         </Box>
-        <Box component={Grid} item xs={3}>
-          <Box display="flex" alignItems="center" justifyContent="flex-end">
-            <VolumeDown />
-            <Slider
-              aria-label="Volume"
-              size="small"
-              value={volume}
-              onChange={(e, newValue) => setVolume(newValue as number)}
-              min={0}
-              max={1}
-              step={0.01}
-              sx={{ width: 100, ml: 1 }}
-            />
-            <VolumeUp />
-          </Box>
+        <Box sx={{ width: '25%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+          <VolumeDown />
+          <Slider
+            aria-label="Volume"
+            size="small"
+            value={volume}
+            onChange={(e, newValue) => setVolume(newValue as number)}
+            min={0}
+            max={1}
+            step={0.01}
+            sx={{ width: 100, ml: 1 }}
+          />
+          <VolumeUp />
         </Box>
-      </Grid>
+      </Box>
     </PlayerContainer>
   );
 };
