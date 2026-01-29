@@ -18,7 +18,7 @@ interface PlayerContextType {
   togglePlay: () => void;
   setVolume: (volume: number) => void;
   toggleLoop: () => void;
-  handleProgress: (p: { played: number }) => void;
+  handleProgress: (state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }) => void;
   handleDuration: (d: number) => void;
 }
 
@@ -51,8 +51,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     setLoop(!loop);
   };
 
-  const handleProgress = (p: { played: number }) => {
-    setProgress(p.played);
+  const handleProgress = (state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }) => {
+    setProgress(state.played);
   };
 
   const handleDuration = (d: number) => {

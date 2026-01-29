@@ -57,8 +57,7 @@ const Player: React.FC = () => {
     handleProgress,
     handleDuration,
   } = usePlayer();
-  // @ts-ignore
-  const playerRef = useRef<ReactPlayer>(null);
+  const playerRef = useRef<any>(null);
 
   const handleSeekChange = (event: Event, newValue: number | number[]) => {
     if (playerRef.current) {
@@ -85,20 +84,22 @@ const Player: React.FC = () => {
         playing={isPlaying}
         volume={volume}
         loop={loop}
+        // @ts-ignore
         onProgress={handleProgress}
+        // @ts-ignore
         onDuration={handleDuration}
         onPlay={!isPlaying ? togglePlay : undefined}
         onPause={isPlaying ? togglePlay : undefined}
         style={{ display: 'none' }}
       />
       <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={3}>
+        <Box component={Grid} item xs={3}>
           <Typography variant="subtitle1" noWrap>{currentSong.title}</Typography>
           <Typography variant="caption" color="text.secondary" noWrap>
             {currentSong.artist}
           </Typography>
-        </Grid>
-        <Grid item xs={6}>
+        </Box>
+        <Box component={Grid} item xs={6}>
           <Box display="flex" alignItems="center" justifyContent="center">
             <IconButton size="small" onClick={() => handleSeek(-10)}>
               <FastRewind />
@@ -126,8 +127,8 @@ const Player: React.FC = () => {
             />
             <Typography variant="caption" sx={{ ml: 1 }}>{formatTime(duration)}</Typography>
           </Box>
-        </Grid>
-        <Grid item xs={3}>
+        </Box>
+        <Box component={Grid} item xs={3}>
           <Box display="flex" alignItems="center" justifyContent="flex-end">
             <VolumeDown />
             <Slider
@@ -142,7 +143,7 @@ const Player: React.FC = () => {
             />
             <VolumeUp />
           </Box>
-        </Grid>
+        </Box>
       </Grid>
     </PlayerContainer>
   );
