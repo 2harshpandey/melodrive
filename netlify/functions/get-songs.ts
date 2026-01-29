@@ -1,4 +1,3 @@
-
 import { Handler } from '@netlify/functions';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -24,15 +23,19 @@ const handler: Handler = async (event, context) => {
 
   try {
     console.log('Searching for resources in Cloudinary...');
-    const { resources } = await cloudinary.search
-      .expression(`tags=${tag}`)
-      .sort_by('public_id', 'desc')
-      .execute();
+    const { resources } = await cloudinary.api.resources_by_tag(tag, {
+      resource_type: 'video',
+      context: true,
+      max_results: 500, // Adjust as needed
+    });
+
+    // Manually sort to emulate sort_by('public_id', 'desc')
+    resources.sort((a: any, b: any) => b.public_id.localeCompare(a.public_id));
 
     console.log(`Found ${resources.length} resources.`);
     const songs = resources.map((file: any) => ({
       url: file.secure_url,
-      title: file.original_filename || file.filename,
+      title: file.original_filename || file.public_id,
       artist: file.context?.custom?.artist || 'Unknown Artist',
       albumArt: file.context?.custom?.albumArt,
     }));

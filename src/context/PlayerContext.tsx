@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 interface Song {
@@ -100,7 +99,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 export const usePlayer = () => {
   const context = useContext(PlayerContext);
   if (context === undefined) {
-    throw new Error('usePlayer must be used within a PlayerProvider');
+    throw new Error('usePlayer must be used within an AuthProvider');
   }
   return context;
 };
