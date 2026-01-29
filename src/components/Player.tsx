@@ -32,6 +32,7 @@ const PlayerContainer = styled(Box)(({ theme }) => ({
 
 // Function to format seconds into MM:SS
 const formatTime = (seconds: number) => {
+  if (isNaN(seconds)) return '0:00';
   const date = new Date(seconds * 1000);
   const hh = date.getUTCHours();
   const mm = date.getUTCMinutes();
@@ -58,12 +59,10 @@ const Player: React.FC = () => {
     handleDuration,
     handleEnded,
   } = usePlayer();
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<ReactPlayer>(null);
 
   const handleSeekChange = (event: Event, newValue: number | number[]) => {
-    if (playerRef.current) {
-      playerRef.current.seekTo(newValue as number, 'fraction');
-    }
+    playerRef.current?.seekTo(newValue as number, 'fraction');
   };
 
   const handleSeek = (seconds: number) => {
@@ -85,9 +84,7 @@ const Player: React.FC = () => {
         playing={isPlaying}
         volume={volume}
         loop={loop}
-        // @ts-ignore
         onProgress={handleProgress}
-        // @ts-ignore
         onDuration={handleDuration}
         onEnded={handleEnded}
         style={{ display: 'none' }}

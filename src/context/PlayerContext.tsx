@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 interface Song {
   url: string;
@@ -35,58 +35,63 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [duration, setDuration] = useState<number>(0);
   const [playedSeconds, setPlayedSeconds] = useState<number>(0);
 
-  const playSong = (song: Song) => {
-    setCurrentSong(song);
-    setIsPlaying(true);
-    setProgress(0);
-    setDuration(0);
-    setPlayedSeconds(0);
-  };
+  const togglePlay = useCallback(() => {
+    setIsPlaying(prevIsPlaying => !prevIsPlaying);
+  }, []);
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
+  const playSong = useCallback((song: Song) => {
+    if (currentSong?.url === song.url) {
+      togglePlay();
+    } else {
+      setCurrentSong(song);
+      setIsPlaying(true);
+      setProgress(0);
+      setDuration(0);
+      setPlayedSeconds(0);
+    }
+  }, [currentSong, togglePlay]);
 
-  const setVolumeState = (newVolume: number) => {
+
+  const setVolumeState = useCallback((newVolume: number) => {
     setVolume(newVolume);
-  };
+  }, []);
 
-  const toggleLoop = () => {
-    setLoop(!loop);
-  };
+  const toggleLoop = useCallback(() => {
+    setLoop(prevLoop => !prevLoop);
+  }, []);
 
-  const handleProgress = (state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }) => {
+  const handleProgress = useCallback((state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }) => {
     setProgress(state.played);
     setPlayedSeconds(state.playedSeconds);
-  };
+  }, []);
 
-  const handleDuration = (d: number) => {
+  const handleDuration = useCallback((d: number) => {
     setDuration(d);
-  };
+  }, []);
 
-  const handleEnded = () => {
+  const handleEnded = useCallback(() => {
     setIsPlaying(false);
+  }, []);
+
+  const value = {
+    currentSong,
+    isPlaying,
+    volume,
+    loop,
+    progress,
+    duration,
+    playedSeconds,
+    playSong,
+    togglePlay,
+    setVolume: setVolumeState,
+    toggleLoop,
+    handleProgress,
+    handleDuration,
+    handleEnded,
   };
 
   return (
-    <PlayerContext.Provider
-      value={{
-        currentSong,
-        isPlaying,
-        volume,
-        loop,
-        progress,
-        duration,
-        playedSeconds,
-        playSong,
-        togglePlay,
-        setVolume: setVolumeState,
-        toggleLoop,
-        handleProgress,
-        handleDuration,
-        handleEnded,
-      }}
-    >
+    <PlayerContext.Provider value={value}>
       {children}
     </PlayerContext.Provider>
   );

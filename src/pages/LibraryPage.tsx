@@ -20,17 +20,27 @@ const LibraryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [user, setUser] = useState<any>(null);
 
-  // In a real app, user would be from auth context
-  const user = users[0];
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const { username } = JSON.parse(storedUser);
+        const currentUser = users.find(u => u.username === username);
+        setUser(currentUser);
+      } catch (e) {
+        console.error("Failed to parse user from localStorage", e);
+      }
+    }
+  }, []);
 
   const fetchSongs = useCallback(async () => {
+    if (!user) return; // Don't fetch if there's no user
     try {
       setLoading(true);
-      if (user) {
-        const fetchedSongs = await getSongs(user.cloudinaryTag);
-        setSongs(fetchedSongs);
-      }
+      const fetchedSongs = await getSongs(user.cloudinaryTag);
+      setSongs(fetchedSongs);
     } catch (err) {
       setError('Failed to fetch songs.');
       console.error(err);
@@ -47,7 +57,7 @@ const LibraryPage: React.FC = () => {
     cloudName: process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || '',
     uploadPreset: process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET || '',
     apiKey: process.env.REACT_APP_CLOUDINARY_API_KEY || '',
-    tags: [user.cloudinaryTag],
+    tags: user ? [user.cloudinaryTag] : [],
     cropping: false,
     onSuccess: () => {
       fetchSongs(); // Refetch songs after successful upload

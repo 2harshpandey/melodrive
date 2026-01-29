@@ -29,7 +29,7 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
       <CardMedia
         component="img"
         sx={{ width: 60, height: 60, borderRadius: 1 }}
-        image={song.albumArt || 'https://via.placeholder.com/150'}
+        image={song.albumArt || 'https://placehold.co/150x150'}
         alt={song.title}
       />
       <CardContent sx={{ flex: '1 0 auto' }}>

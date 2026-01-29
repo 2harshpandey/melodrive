@@ -1,8 +1,12 @@
-
 [
   {
     "username": "testuser",
     "password": "password",
     "cloudinaryTag": "testuser_songs"
+  },
+  {
+    "username": "2harshpandey",
+    "password": "Ample@1234",
+    "cloudinaryTag": "2harshpandey_songs"
   }
 ]
