@@ -21,6 +21,9 @@ interface PlayerContextType {
   handleProgress: (state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }) => void;
   handleDuration: (d: number) => void;
   handleEnded: () => void;
+  isVideoMode: boolean;
+  exitVideoMode: () => void;
+  playVideo: (song: Song) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -33,6 +36,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [progress, setProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [playedSeconds, setPlayedSeconds] = useState<number>(0);
+  const [isVideoMode, setIsVideoMode] = useState<boolean>(false);
 
   const togglePlay = useCallback(() => {
     setIsPlaying(prevIsPlaying => !prevIsPlaying);
@@ -47,8 +51,18 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       setProgress(0);
       setDuration(0);
       setPlayedSeconds(0);
+      setIsVideoMode(false); // When playing a regular song, exit video mode
     }
   }, [currentSong, togglePlay]);
+
+  const playVideo = useCallback((song: Song) => {
+    setCurrentSong(song);
+    setIsPlaying(true);
+    setProgress(0);
+    setDuration(0);
+    setPlayedSeconds(0);
+    setIsVideoMode(true);
+  }, []);
 
 
   const setVolumeState = useCallback((newVolume: number) => {
@@ -57,6 +71,10 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleLoop = useCallback(() => {
     setLoop(prevLoop => !prevLoop);
+  }, []);
+
+  const exitVideoMode = useCallback(() => {
+    setIsVideoMode(false);
   }, []);
 
   const handleProgress = useCallback((state: { played: number, playedSeconds: number, loaded: number, loadedSeconds: number }) => {
@@ -87,6 +105,9 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     handleProgress,
     handleDuration,
     handleEnded,
+    isVideoMode,
+    playVideo,
+    exitVideoMode,
   };
 
   return (
